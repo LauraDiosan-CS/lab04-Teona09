@@ -1,16 +1,31 @@
 #pragma once
 #include"Project.h"
 #include"RepositoryArray.h"
-#include"RepositorySTL.h"
-using namespace std;
+//#include"RepositorySTL.h"
 
-void repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(RepositoryArray &projects, \
-	int k, int l, Project found[], int& m);
+void repoArrayDeleteProjectsWithZeroBranchesOrCommits(Project, int&);
 
-void repoArrayDeleteProjectsWithZeroBranchesOrCommits(Project projects[], int& n);
 
-void repoSTLFindProjectsWithAtLeastKBranchesAndLCommits(RepositorySTL& projects, \
-	int k, int l, vector<Project> &foundProjects);
-
-void repoSTLDeleteProjectsWithZeroBranchesOrCommits(RepositorySTL& projects);
+class Service
+{
+private:
+	RepositoryArray repo;
+public:
+	Service();
+	Service(const RepositoryArray&);
+	void setRepo(const RepositoryArray&);
+	void addProject(const char *, int, int);
+	bool findProject(Project);
+	void delProject(const char*, int, int);
+	void updateProject(const char*, int, int, const char*, int, int);
+	Project getProjectFromPos(int);
+	Project* getProjects();
+	int findProject(const char*, int, int);
+	void getAll();
+	int getSize();
+	void repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(RepositoryArray&,\
+		int, int, Project*, int&);
+	void repoArrayDeleteProjectsWithZeroBranchesOrCommits(Project , int&);
+	~Service();
+};
 

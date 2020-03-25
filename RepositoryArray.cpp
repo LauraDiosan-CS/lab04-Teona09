@@ -32,7 +32,7 @@ void RepositoryArray::delElem(Project p)
 	}
 }
 
-void RepositoryArray::updateElem(Project p,const char* path, int branches, int commits)
+void RepositoryArray::updateElem(Project &p,const char* path, int branches, int commits)
 {
 	int i = findElem(p);
 	if (i != -1)

@@ -12,7 +12,7 @@ public:
 	int findElem(Project);
 	Project getItemFromPos(int);
 	void delElem(Project);
-	void updateElem(Project,const char*, int, int);
+	void updateElem(Project&,const char*, int, int);
 	Project* getAll();
 	int dim();
 	~RepositoryArray();

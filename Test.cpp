@@ -58,40 +58,42 @@ void testRepositoryArray()
 
 }
 //--------------------------------------------------------------------
-void testRepositorySTL()
-{
-	Project p1("Abracadabra", 5, 34);
-	Project p2("Hello world", 2, 3);
-	Project p3("Mario", 6, 45);
-	Project p4("Plants vs Zombies", 8, 31);
-	RepositorySTL proj;
 
-	proj.addElem(p1); //add elements
-	proj.addElem(p2);
-	proj.addElem(p3);
-	proj.getAll() = { p1,p2,p3 }; 
-	
-	assert(proj.findElem(p1) == true);
-	assert(proj.findElem(p4) == false);
-
-	assert(proj.dim() == 3); //delete element
-	proj.delElem(p3);
-	assert(proj.dim() == 2);
-	assert(proj.findElem(p3) == false);
-
-	assert(strcmp(p2.getGitPath(), "Hello world")==0); //update element
-	proj.updateElem(p2, "Hello there", 2, 7);
-	// - pt teste folosesc p2 sau proj.getItemFromPos(1)?
-	assert(strcmp(proj.getItemFromPos(1).getGitPath(), "Hello there") == 0);
-	assert(proj.getItemFromPos(1).getTotalNoOfCommits() == 7);
-}
 //--------------------------------------------------------------------
 void testService()
-{
-	testRepoArrayFindProjectsWithAtLeastKBranchesAndLCommits();
-	testRepoArrayDeleteProjectsWithZeroBranchesOrCommits();
-	testRepoSTLFindProjectsWithAtLeastKBranchesAndLCommits();
-	testRepoSTLDeleteProjectsWithZeroBranchesOrCommits();
+{	Service rep;
+	//ADD
+	rep.addProject("Abracadabra", 5, 34);
+	rep.addProject("Mario", 6, 45);
+	rep.addProject("Plants vs Zombies", 8, 31);
+	rep.addProject("Lab5", 0, 0);
+	rep.addProject("New Idea", 1, 0);
+	rep.addProject("Hello world", 2, 3);
+	//DELETE
+	assert(rep.getSize() == 6);
+	rep.delProject("Hello world", 2, 3);
+	assert(rep.getSize() == 5);
+	//GET PROJECTS
+	Project p1("Abracadabra", 5, 34);
+	Project p2("Mario", 6, 45);
+	Project p3("Plants vs Zombies", 8, 31);
+	Project p4("Lab5", 0, 0);
+	Project p5("New Idea", 1, 0);
+	assert(rep.getProjects()[0] == p1);
+	assert(rep.getProjects()[1] == p2);
+	assert(rep.getProjects()[2] == p3);
+	//GET PROJECT FROM POS
+	assert(rep.getProjectFromPos(0) == p1);
+	//FIND PROJECT
+	assert(rep.findProject("Plants vs Zombies", 8, 31) == 2);
+	assert(rep.findProject("Hello world", 2, 3) == -1);
+	//UPDATE
+	rep.updateProject("Abracadabra", 5, 34, "Abracadabra", 6, 36);
+	assert(rep.getProjects()[0].getNoOfBranches() == 6);
+	assert(rep.getProjects()[0].getTotalNoOfCommits() == 36);
+	
+	//OTHER TESTS
+	
 }
 //--------------------------------------------------------------------
 void testRepoArrayFindProjectsWithAtLeastKBranchesAndLCommits()
@@ -112,61 +114,38 @@ void testRepoArrayFindProjectsWithAtLeastKBranchesAndLCommits()
 	assert(pro.dim() == 6);
 	Project found[10];
 	int m = 0;
-	repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(pro, 5, 33, found,m);
+	//repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(pro, 5, 33, found,m); 
 	assert(m == 2);
 	assert(found[0] == p1);
 	assert(found[1] == p3);
 }
 //--------------------------------------------------------------------
-void testRepoArrayDeleteProjectsWithZeroBranchesOrCommits()
-{
-
-}
-//--------------------------------------------------------------------
-void testRepoSTLFindProjectsWithAtLeastKBranchesAndLCommits()
+/*
+void testRepositorySTL()
 {
 	Project p1("Abracadabra", 5, 34);
 	Project p2("Hello world", 2, 3);
 	Project p3("Mario", 6, 45);
 	Project p4("Plants vs Zombies", 8, 31);
-	Project p5("Lab5", 0, 0);
-	Project p6("New Idea", 1, 0);
 	RepositorySTL proj;
-	proj.addElem(p1);
-	proj.addElem(p2);
-	proj.addElem(p3);
-	proj.addElem(p4);
-	proj.addElem(p5);
-	proj.addElem(p6);
-	vector<Project>found;
-	repoSTLFindProjectsWithAtLeastKBranchesAndLCommits(proj, 5, 33, found);
-	assert(found.size() == 2);
-	assert(found[0] == p1);
-	assert(found[1] == p3);
-}
-//--------------------------------------------------------------------
-void testRepoSTLDeleteProjectsWithZeroBranchesOrCommits()
-{
-	Project p1("Abracadabra", 5, 34);
-	Project p2("Hello world", 2, 3);
-	Project p3("Mario", 6, 45);
-	Project p4("Plants vs Zombies", 8, 31);
-	Project p5("Lab5", 0, 0);
-	Project p6("New Idea", 1, 0);
-	RepositorySTL proj;
-	proj.addElem(p1);
-	proj.addElem(p2);
-	proj.addElem(p3);
-	proj.addElem(p4);
-	proj.addElem(p5);
-	proj.addElem(p6);
-	repoSTLDeleteProjectsWithZeroBranchesOrCommits(proj);
-	assert(proj.dim() == 4);
-	assert(proj.findElem(p1)==true);
-	assert(proj.findElem(p2)==true);
-	assert(proj.findElem(p3)==true);
-	assert(proj.findElem(p4)==true);
-	assert(proj.findElem(p5)==false);
-	assert(proj.findElem(p6)==false);
 
+	proj.addElem(p1); //add elements
+	proj.addElem(p2);
+	proj.addElem(p3);
+	proj.getAll() = { p1,p2,p3 };
+
+	assert(proj.findElem(p1) == true);
+	assert(proj.findElem(p4) == false);
+
+	assert(proj.dim() == 3); //delete element
+	proj.delElem(p3);
+	assert(proj.dim() == 2);
+	assert(proj.findElem(p3) == false);
+
+	assert(strcmp(p2.getGitPath(), "Hello world")==0); //update element
+	proj.updateElem(p2, "Hello there", 2, 7);
+	// - pt teste folosesc p2 sau proj.getItemFromPos(1)?
+	assert(strcmp(proj.getItemFromPos(1).getGitPath(), "Hello there") == 0);
+	assert(proj.getItemFromPos(1).getTotalNoOfCommits() == 7);
 }
+*/
