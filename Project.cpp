@@ -67,9 +67,9 @@ Project::~Project()
 Project& Project::operator=(const Project& p)
 {
 	if (this == &p) return *this; //self-assignment
-	if (gitPath) delete[] gitPath;
 	if (p.gitPath)
 	{
+		if (gitPath) delete[] gitPath;
 		gitPath = new char[strlen(p.gitPath) + 1];
 		strcpy_s(gitPath, strlen(p.gitPath) + 1, p.gitPath);
 	}

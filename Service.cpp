@@ -5,27 +5,38 @@ using namespace std;
 
 Service::Service()
 {
+	sizeUndo = 0;
 }
 
 Service::Service(const RepositoryArray& r)
 {
 	repo = r;
+	sizeUndo = 0;
+}
+
+void Service::setRepo(const RepositoryArray& r)
+{
+	repo = r;
+	sizeUndo = 0;
 }
 
 void Service::addProject(const char* path, int branch, int commit)
 {
+	undo[sizeUndo++] = repo;
 	Project p(path, branch, commit);
 	repo.addElem(p);
 }
 
 void Service::delProject(const char *path, int branch, int commit)
 {
+	undo[sizeUndo++] = repo;
 	Project p(path, branch, commit);
 	repo.delElem(p);
 }
 
 void Service::updateProject(const char* path, int branch, int commit, const char* path1, int branch1, int commit1)
 {
+	undo[sizeUndo++] = repo;
 	Project p(path, branch, commit);
 	repo.updateElem(p, path1, branch1, commit1);
 }
@@ -56,13 +67,12 @@ Service::~Service()
 
 }
 
-void Service::repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(RepositoryArray& projects, \
-	int k, int l, Project found[], int& m)
+void Service::repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(int k, int l, Project found[], int& m)
 {
 	m = 0;
-	for (int i = 0; i < projects.dim(); i++)
+	for (int i = 0; i < repo.dim(); i++)
 	{
-		Project crrProject = projects.getItemFromPos(i);
+		Project crrProject = repo.getItemFromPos(i);
 		if (crrProject.getNoOfBranches() >= k and crrProject.getTotalNoOfCommits() >= l)
 		{
 			found[m] = crrProject;
@@ -71,44 +81,28 @@ void Service::repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(RepositoryArr
 	}
 }
 
-void repoArrayDeleteProjectsWithZeroBranchesOrCommits(Project projects[], int& n)
-{
-
-}
-
-/*
-//	creates a list with the projects that have at least k branches and l commits
-//	IN:	an array of projects, the minimum number of branches(int) and commits(int)
-//	OUT: an array of the required projects
-
-void repoSTLFindProjectsWithAtLeastKBranchesAndLCommits(RepositorySTL& projects, \
-	int k, int l, vector<Project>& foundProjects)
-{
-	for (int i = 0; i < projects.dim(); i++)
+void Service::repoArrayDeleteProjectsWithZeroBranchesOrCommits()
+{	
+	for (int i = 0; i < repo.dim(); i++)
 	{
-		Project crrProject = projects.getItemFromPos(i);
-		if (crrProject.getNoOfBranches() >= k and crrProject.getTotalNoOfCommits() >= l)
-		{
-			foundProjects.push_back(projects.getItemFromPos(i));
-		}
-	}
-}
-
-
-//	deletes from the repository all the projects that don't have any branches or commits
-//	IN: an array of projects
-//	OUT: -
-
-void repoSTLDeleteProjectsWithZeroBranchesOrCommits(RepositorySTL& projects)
-{
-	for (int i = 0; i < projects.dim(); i++)
-	{
-		Project crrProject = projects.getItemFromPos(i);
+		Project crrProject = repo.getItemFromPos(i);
 		if (crrProject.getNoOfBranches() == 0 or crrProject.getTotalNoOfCommits() == 0)
 		{
-			projects.delElem(projects.getItemFromPos(i));
+			undo[sizeUndo++] = repo;
+			repo.delElem(crrProject);
 			i--;
 		}
 	}
 }
-*/
+
+int Service::undoList()
+{
+	if (sizeUndo == 0)
+		return 1;
+	else
+	{
+		repo = undo[sizeUndo-1];
+		sizeUndo--;
+		return 0;
+	}
+}

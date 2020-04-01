@@ -4,6 +4,11 @@ using namespace std;
 
 UI::UI(){}
 
+UI::UI(const Service &serv)
+{
+	service = serv;
+}
+
 UI::~UI(){}
 
 void UI::printMenu()
@@ -14,9 +19,9 @@ void UI::printMenu()
 	cout << "\t 2.Delete Project" << '\n';
 	cout << "\t 3.Update Project" << '\n';
 	cout << "\t 4.Print All Projects" << '\n';
-	//cout << "\t 5.Print Projects with at least k branches and l commits" << '\n';
-	//cout << "\t 6.Delete Projects that have 0 branches or 0 commits" << '\n';
-	//cout << "\t 7.Undo" << '\n';
+	cout << "\t 5.Print Projects with at least k branches and l commits" << '\n';
+	cout << "\t 6.Delete Projects that have 0 branches or 0 commits" << '\n';
+	cout << "\t 7.Undo" << '\n';
 	cout << "\t 0.Exit" << '\n'<<'\n';
 	cout << "Choose option: " ;
 }
@@ -53,23 +58,23 @@ void UI::deleteProject()
 void UI::updateProject()
 {
 	cout << "Current datas: "<<'\n';
-	cout << "GitPath: " << '\n';
+	cout << "GitPath: " ;
 	char* p = new char[10];
 	cin >> p;
-	cout << "No of branches: " << '\n';
+	cout << "No of branches: " ;
 	int b;
 	cin >> b;
-	cout << "No of commits: " << '\n';
+	cout << "No of commits: ";
 	int c;
 	cin >> c;
 	cout << "New datas: " << '\n';
-	cout << "GitPath: " << '\n';
+	cout << "GitPath: " ;
 	char* newp = new char[10];
 	cin >> newp;
-	cout << "No of branches: " << '\n';
+	cout << "No of branches: ";
 	int newb;
 	cin >> newb;
-	cout << "No of commits: " << '\n';
+	cout << "No of commits: ";
 	int newc;
 	cin >> newc;
 	service.updateProject(p, b, c, newp, newb, newc);
@@ -90,11 +95,45 @@ void UI::printProjects()
 	}
 }
 
+void UI::undo()
+{
+	int done = service.undoList();
+	if (done == 1)
+		cout << "no undo posible";
+	else
+	{
+		cout << "undo done";
+		printProjects();
+	}
+}
+
+void UI::filterProjectsWithCondition()
+{
+	cout << "minimum number of branches: ";
+	int k;
+	cin >> k;
+	cout << "minimum number of commits: ";
+	int l;
+	cin >> l;
+	Project found[10];
+	int m=0;
+	service.repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(k, l, found, m);
+	for (int i = 0; i < m; i++)
+	{
+		cout << found[i].getGitPath() << ' ';
+		cout << found[i].getNoOfBranches() << ' ';
+		cout << found[i].getTotalNoOfCommits() << endl;
+	}
+}
+
+void UI::deleteProjectsWithCondition()
+{
+	service.repoArrayDeleteProjectsWithZeroBranchesOrCommits();
+}
+
+
 void UI::console()
 {
-	service.addProject("Notes", 2, 30);
-	service.addProject("Alarms", 7, 23);
-	service.addProject("Hey", 5, 17);
 	int option;
 	bool ok = 1;
 	while (ok)
@@ -122,6 +161,21 @@ void UI::console()
 			case 4:
 			{
 				printProjects();
+				break;
+			}
+			case 5:
+			{
+				filterProjectsWithCondition();
+				break;
+			}
+			case 6:
+			{
+				deleteProjectsWithCondition();
+				break;
+			}
+			case 7:
+			{
+				undo();
 				break;
 			}
 			case 0:

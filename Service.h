@@ -10,6 +10,8 @@ class Service
 {
 private:
 	RepositoryArray repo;
+	RepositoryArray undo[100];
+	int sizeUndo = 0;
 public:
 	Service();
 	Service(const RepositoryArray&);
@@ -23,9 +25,9 @@ public:
 	int findProject(const char*, int, int);
 	void getAll();
 	int getSize();
-	void repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(RepositoryArray&,\
-		int, int, Project*, int&);
-	void repoArrayDeleteProjectsWithZeroBranchesOrCommits(Project , int&);
+	int undoList();
+	void repoArrayFindProjectsWithAtLeastKBranchesAndLCommits(int, int, Project*, int&);
+	void repoArrayDeleteProjectsWithZeroBranchesOrCommits();
 	~Service();
 };
 

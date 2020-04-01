@@ -15,12 +15,13 @@ int main()
     testRepositoryArray();
     testService();
     cout << "everything is fine :)"<<'\n';
-    /*RepositoryArray repo;
+    RepositoryArray repo;
     Service serv(repo);
     serv.addProject("Notes", 2, 30);
     serv.addProject("Alarms", 7, 23);
-    serv.addProject("Hey", 5, 17);*/
-    UI user;
+    serv.addProject("Hey", 5, 17);
+    serv.addProject("Game", 1, 0);
+    UI user(serv);
     user.console();
     return 0;
 }

@@ -4,14 +4,18 @@ class UI
 {
 private:
 	Service service;
+public:
+	UI();
+	UI(const Service&);
 	void printMenu();
 	void addProject();
 	void deleteProject();
 	void updateProject();
 	void printProjects();
-public:
-	UI();
-	~UI();
+	void undo();
+	void filterProjectsWithCondition();
+	void deleteProjectsWithCondition();
 	void console();
+	~UI();
 };
 
